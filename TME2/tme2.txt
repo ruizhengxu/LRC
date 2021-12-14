@@ -1,0 +1,70 @@
+Nom : Xu
+Prénom : Ruizheng
+Numéro étudiant : 21111473
+
+---------------------------------------------------------------------
+
+Compte rendu TME2 :
+
+Durant ce premier TME, nous avons tout d'abord commencé par une prise en main de logiciel LoTREC, et les exercices m'ont permis de me familiariser avec ce nouveau logiciel que je n'avais jamais utilisé auparavant. À travers LoTREC, j'ai pu m'approfondi avec les notations préfixes et la vérification de la satisfiabilité des formules.
+Le prochain exercice m'a fait découvrir l'utilisation de la déduction dans un cas concret (préscription d'un médication au patient). En formalisant des connaissances qu'on dispose, puis de les exprimer en formules à travers des variables propositionnelles qu'on a défini, nous avons pu conclure avec la déduction de la présciption ou non d'un médicament.
+Et le dernier exercice qui se base sur les modèles et pré-modèles, qu'on a pas eu temps de finir, et qui est encore un peu flou à mes yeux, je pense qu'un rappel de ces notions serait nécessaire pour moi. 
+
+---------------------------------------------------------------------
+
+Ex.2) Prise en main
+
+Q.1)
+
+F1 : and A not imp B A
+
+	La formule est non satisfiable car on a une et une seule feuille fermée : A et (non A).
+
+F2 : imp and or A C or B C imp not B or and A B C
+	
+	La formule est satisfiable car on a au moins une feuille ouverte, mais on ne peut pas conclure ici qu'elle est valide ou pas. On pourrait chercher la satisfiabilité de (non F2), et on constate qu'elle est non satisfiable sur le logiciel, donc comme (non F2) est non satisfiable, on en déduit que F2 est valide.
+
+F3 : not imp imp A B imp not B not A
+
+	La formule est non satisfiable, car les premodel.1 (A et non A) et premodel.2 (B et non B) induisent tous à une feuille fermée.
+
+F4 : or and imp A B imp B C and imp C B imp B A
+
+	La formule est satisfiable, car il y a des feuilles ouvertes, et on peut aussi dire qu'elle est non valide car on a deux feuilles fermées (premodel.3.1 et premodel.2.2.1).
+
+F5 : imp imp A B equiv imp B C imp A C
+
+	La formule est satisfiable, car il y a des feuilles ouvertes, et on peut aussi dire qu'elle est non valide car on a trois feuilles fermées (premodel.2.2.1 et premodel.2.1 et premodel.2.2.3).
+
+F6 : imp and imp A B imp B C imp A C
+
+	La formule est satisfiable car toutes les feuilles sont ouvertes, on peut chercher (non F6) pour vérifier si F6 est valide ou pas. Et on constate que toutes les feuilles de (non F6) sont fermées, donc (non F6) est non satisfiable, donc F6 est valide.
+
+---------------------------------------------------------------------
+
+Ex.3) Diagnostic médical (simpliste)
+
+Q.3)
+
+Les formules :
+
+- equiv FIEVRE SUP38
+- imp GRIPPE TAMIFLU
+- imp and FIEVRE TOUX or GRIPPE BRONCHITE
+- and TOUX SUP38
+
+La formule qu'on utilise en réunissant toutes les connaisances :
+
+- and and and and equiv FIEVRE SUP38 imp GRIPPE TAMIFLU imp and FIEVRE TOUX or GRIPPE BRONCHITE and TOUX SUP38 not TAMIFLU
+
+Et on constate que la formule est satisfiable avec une seule feuille ouverte (premodel.2.3.2.2), donc il y a un cas où la prise de tamiflu n'est pas nécessaire (le patient n'a pas de grippe et a de la bronchite), et que dans tous les autres cas, la prise de tamiflu est nécessaire.
+
+---------------------------------------------------------------------
+
+Ex.4) Modèles et pré-modèles
+
+Q.3)
+
+Q.4)
+
+
