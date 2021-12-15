@@ -1,3 +1,7 @@
+#########################
+# XU Ruizheng - 21111473
+#########################
+
 # -*- coding: utf-8 -*-
 """
 Dictionnaires décrivants les transposés et symétries de relations, 
