@@ -189,6 +189,9 @@ class Graphe:
             self.relations[k] = v
 
     def getRelations(self, i, j):
+        '''
+        Renvoie l’ensemble des relations entre les noeuds i et j du graphe G
+        '''
         if (i, j) in self.relations.keys():
             return (set(self.relations[(i, j)]))
         if (j, i) in self.relations.keys():
@@ -198,7 +201,7 @@ class Graphe:
     # Question 2    
     def propagation(self, n1, n2, verbose=False):
         '''
-        Utilise l’algorithme d’Allen pour propager la relation entre les noeuds
+        Utilise l’algorithme d’Allen (cf Cours 8) pour propager la relation entre les noeuds
         n1 et n2 dans le reste du graphe G
         '''
         pile = [(n1, n2, self.getRelations(n1, n2))]
@@ -251,6 +254,9 @@ class Graphe:
             
     # Question 5
     def retirer(self, i):
+        '''
+        Retirer du graphe G le noeud i et toutes les relations qui le concernent
+        '''
         self.noeuds.remove(i)
         for k in list(self.relations.keys()):
             if i in k: self.relations.pop(k)
@@ -283,13 +289,13 @@ G2.propagation('B', 'C')
 print("G2 après propagation B{=}C :", G2, "\n")
     
 # Question 6
-G1.propagation('B', 'C', verbose=True)
+G1.propagation('B', 'C', verbose=True) # Mettre verbose à True pour voir les commentaires dans la console
 
 # Question 7
 
 G = Graphe(['Tc', 'Tm', 'Ts', 'Te', 'Tb'], {('Tm', 'Tc'): ['d'],
                                 ('Ts', 'Tc'): ['m']})
-G.propagation('Ts', 'Tc', verbose=True)
+G.propagation('Ts', 'Tc', verbose=True) # On vérifie qu'on a {<}
 
 # ---------------------------------------------------
 
@@ -297,14 +303,14 @@ G.ajouter('<', 'Ts', 'Te')
 G.ajouter('<', 'Te', 'Tm')
 G.propagation('Ts', 'Te', verbose=True) # Propagation de la contrainte entre Ts et Te
 G.propagation('Te', 'Tm', verbose=True) # Propagation de la contrainte entre Te et Tm
-print("La relation de Te et Tc après les propagations :", G.relations[('Te', 'Tc')])
+print("La relation de Te et Tc après les propagations :", G.relations[('Te', 'Tc')]) # On vérifie qu'on a {d}
 
 # ---------------------------------------------------
 
 G.retirer('Ts')
 G.ajouter(['o', 'dt', 'et'], 'Te', 'Tb')
 G.ajouter(['<', 'm', 'mt', '>'], 'Tb', 'Tc')
-G.propagation('Tb', 'Tc', verbose=True)
+G.propagation('Tb', 'Tc', verbose=True) # On vérifie qu'on a bien une contraction temporelle
 
 G.noeuds.append('Ts')
-G.propagation('Tb', 'Tc', verbose=True)
+G.propagation('Tb', 'Tc', verbose=True) # On vérifie qu'on a bien une contraction temporelle
