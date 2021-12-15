@@ -159,11 +159,7 @@ print(compose('m', 'd')) # {d, o, s}
 print(compose('ot', '>')) # {>}
 print(compose('>', 'e')) # {>}
 print(compose('ot', 'm')) # {dt, et, o}
-
-a = compose('=', 'd')
-b = compose('m', 'd')
-c = a.union(b)
-print(c)
+print("\n")
 
 # Question 4
 
@@ -179,3 +175,132 @@ def compositionSet(S1, S2):
 # Exercice 2
 ############
 
+# Question 1
+class Graphe:
+    
+    def __init__(self, noeuds, relations):
+        self.noeuds = noeuds
+        self.relations = {}
+        for k, v in relations.items():
+            self.relations[k] = v
+
+    def getRelations(self, i, j):
+        if (i, j) in self.relations.keys():
+            return (set(self.relations[(i, j)]))
+        if (j, i) in self.relations.keys():
+            return transposeSet((set(self.relations[(j, i)]))) # Mettre transposee à la place si existe
+        return set(transpose.keys())
+    
+    # Question 2    
+    def propagation(self, n1, n2, verbose=False):
+        '''
+        Utilise l’algorithme d’Allen pour propager la relation entre les noeuds
+        n1 et n2 dans le reste du graphe G
+        '''
+        pile = [(n1, n2, self.getRelations(n1, n2))]
+        step = 0
+        while len(pile) != 0:
+            step += 1
+            (i, j, Rij) = pile.pop(0)
+            if verbose : print("Propagation de R" + i + j + " =", Rij, "\n------------------------")
+            for k in [n for n in self.noeuds if n != i and n!= j]:
+                Rik = self.getRelations(i, k)
+                nRik = Rik.intersection(compositionSet(Rij, self.getRelations(j, k)))
+                if verbose:
+                    print("R"+i+k + " = ", Rik, "\n", "R"+i+k + " & " + "R"+i+j+ " o R"+j+k + " =",\
+                    Rik, "&", Rij, "o", self.getRelations(j, k), '=', nRik)
+                    if nRik != Rik:print("R"+i+k + " !=", nRik, "\n")
+                    else: print("inchangé\n")
+                Rkj = self.getRelations(k, j)
+                nRkj = Rkj.intersection(compositionSet(self.getRelations(k, i), self.getRelations(i, j)))
+                if verbose : 
+                    print("R"+k+j + " = ", Rkj, "\n", "R"+k+j + " & " + "R"+k+i+ " o R"+i+j + " =",\
+                    Rkj, "&", self.getRelations(k, i), "o", self.getRelations(i, j), '=', nRkj)
+                    if nRkj != Rkj: print("R"+k+j + " !=", nRkj, "\n")
+                    else: print("inchangé\n")
+                if len(nRik) == 0 or len(nRkj) == 0:
+                    if verbose: print("Contradiction temporelle.\nFin en", step , "propagations.\n\n")
+                    return
+                if nRik != Rik:
+                    Rik = nRik
+                    self.ajouter(Rik, i, k, verbose)
+                    pile.append((i, k, Rik))
+                if nRkj != Rkj:
+                    Rkj = nRkj
+                    self.ajouter(Rkj, k, j, verbose)
+                    pile.append((k, j, Rkj))
+        if verbose: print("Fin en", step , "propagations.\nAprès propagation :", self, "\n\n")
+        
+    # Question 3
+    def ajouter(self, r, i, j, verbose=False):
+        '''
+        Ajouter relations r au graphe G
+        '''
+        if (i, j) not in self.relations:
+            if verbose: print("Mise à jour de la valeur de R"+i+j + " : ", self.getRelations(i, j), end="")
+            self.relations[(i, j)] = self.getRelations(i, j).intersection(r)
+            if verbose: print(" -->", self.getRelations(i, j), "\n")
+        else:
+            if verbose: print("Mise à jour de la valeur de R"+i+j + " : ", self.getRelations(i, j), end="")
+            self.relations[(i, j)] = set(r)
+            if verbose: print(" -->", self.getRelations(i, j), "\n")
+            
+    # Question 5
+    def retirer(self, i):
+        self.noeuds.remove(i)
+        for k in list(self.relations.keys()):
+            if i in k: self.relations.pop(k)
+
+    def __repr__(self):
+        return str(self.noeuds) + ", " + str(self.relations)
+
+# Question 4
+
+# Exemple du cours
+# G = Graphe(['S', 'L', 'J'], {('S', 'L'): ['o', 'm'],
+#                               ('S', 'J'): ['<', 'm', 'mt', '>'],
+#                               ('L', 'J'): ['o', 's']})
+# print("G :", G, "\n")
+# G.propagation('L', 'J')
+# print("G après propagation L{o, s}J :", G, "\n")
+
+G1 = Graphe(['A', 'B', 'C'], {('A', 'B'): ['<'],
+                              ('A', 'C'): ['>'],
+                              ('B', 'C'): ['=']})
+G1.propagation('B', 'C')
+print("G1 :", G1)
+print("G1 après propagation B{=}C :", G1, "\n")
+
+G2 = Graphe(['A', 'B', 'C'], {('A', 'B'): ['<'],
+                              ('A', 'C'): ['<'],
+                              ('B', 'C'): ['=']})
+print("G2 :", G2)
+G2.propagation('B', 'C')
+print("G2 après propagation B{=}C :", G2, "\n")
+    
+# Question 6
+G1.propagation('B', 'C', verbose=True)
+
+# Question 7
+
+G = Graphe(['Tc', 'Tm', 'Ts', 'Te', 'Tb'], {('Tm', 'Tc'): ['d'],
+                                ('Ts', 'Tc'): ['m']})
+G.propagation('Ts', 'Tc', verbose=True)
+
+# ---------------------------------------------------
+
+G.ajouter('<', 'Ts', 'Te')
+G.ajouter('<', 'Te', 'Tm')
+G.propagation('Ts', 'Te', verbose=True) # Propagation de la contrainte entre Ts et Te
+G.propagation('Te', 'Tm', verbose=True) # Propagation de la contrainte entre Te et Tm
+print("La relation de Te et Tc après les propagations :", G.relations[('Te', 'Tc')])
+
+# ---------------------------------------------------
+
+G.retirer('Ts')
+G.ajouter(['o', 'dt', 'et'], 'Te', 'Tb')
+G.ajouter(['<', 'm', 'mt', '>'], 'Tb', 'Tc')
+G.propagation('Tb', 'Tc', verbose=True)
+
+G.noeuds.append('Ts')
+G.propagation('Tb', 'Tc', verbose=True)
